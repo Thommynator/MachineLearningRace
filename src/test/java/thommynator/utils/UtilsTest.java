@@ -18,5 +18,8 @@ public class UtilsTest {
 
         after = Utils.map(0, 0, 10, 10, 20);
         assertThat(after).isEqualTo(10);
+
+        after = Utils.map(-10, -30, 0, 10, 40);
+        assertThat(after).isEqualTo(30);
     }
 }
