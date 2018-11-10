@@ -1,6 +1,5 @@
-package java.thommynator.utils;
+package thommynator.utils;
 
-import main.java.thommynator.utils.Utils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

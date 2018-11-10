@@ -2,18 +2,29 @@ package thommynator.Game;
 
 import lombok.Getter;
 import lombok.Setter;
+import thommynator.App;
 import thommynator.NeuralNetwork.NeuralNet;
+import thommynator.utils.Utils;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static java.lang.Math.*;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.sin;
 
 public class Car {
-    private color clr;
-    private Pos2D pos;
+    private Point2D position;
     private double heading;
-    private double vel;
+    private double speed;
+
+    @Setter
+    private Color color;
 
     private int nSensors;
     private ArrayList<Double> distances;
@@ -27,11 +38,11 @@ public class Car {
     @Setter
     private NeuralNet neuralNet;
 
-    public Car(PVector pos) {
-        this.clr = color(240, 240, 255);
-        this.pos = pos;
+    public Car(Point2D position) {
+        this.position = position;
         this.heading = PI / 2;
-        this.vel = max(1, new Random().nextDouble() * 5);
+        this.speed = max(1, new Random().nextDouble() * 5);
+        this.color = new Color(240, 240, 255);
         this.nSensors = 9;
         this.distances = new ArrayList<>(nSensors);
         this.drivenDistance = 0.0;
@@ -41,8 +52,8 @@ public class Car {
         this.neuralNet = new NeuralNet(nSensors, hiddenNodes, 2);
     }
 
-    public Car(PVector pos, NeuralNet neuralNet) {
-        this(pos);
+    public Car(Point2D position, NeuralNet neuralNet) {
+        this(position);
         this.neuralNet = neuralNet;
     }
 
@@ -61,22 +72,22 @@ public class Car {
      * even, there will be a front sensor.
      */
     private void measureDistances() {
-        this.distances = new ArrayList<>(this.nSensors);
+        distances = new ArrayList<>(nSensors);
 
-        if (this.nSensors % 2 != 0) {
-            this.distances.add(normalizeDistance(rayDistance(this.heading)));
+        if (nSensors % 2 != 0) {
+            distances.add(normalizeDistance(rayDistance(heading)));
         }
 
         for (int i = 1; i <= (nSensors / 2); i++) {
-            double angle = PI / (floor(nSensors / 2) * 2);
-            this.distances.add(normalizeDistance(rayDistance(this.heading + i * angle)));
-            this.distances.add(normalizeDistance(rayDistance(this.heading - i * angle)));
+            double angle = PI / (floor(nSensors / 2.0) * 2);
+            distances.add(normalizeDistance(rayDistance(heading + i * angle)));
+            distances.add(normalizeDistance(rayDistance(heading - i * angle)));
         }
     }
 
     private double rayDistance(double angle) {
-        double x = this.pos.x;
-        double y = this.pos.y;
+        double x = position.getX();
+        double y = position.getY();
         while (isInsideCanvas(x, y)) {
             if (!isOnTrack(x, y)) {
                 break;
@@ -84,44 +95,41 @@ public class Car {
             x += cos(angle) * 2;
             y += sin(angle) * 2;
         }
-
-        return dist(this.pos.x, this.pos.y, x, y);
+        return position.distance(x, y);
     }
 
     /**
      * Normalizes the distances to range 0 to 1.
      */
     private double normalizeDistance(double dist) {
-        double maxDist = dist(0, 0, width, height);
-        return map(dist, 0, maxDist, 0, 1);
+        double maxDist = Point2D.distance(0, 0, App.MAP_WIDTH, App.MAP_HEIGHT);
+        return Utils.map(dist, 0, maxDist, 0, 1);
     }
 
-    // adapt the amount of input nodes of the NeuralNet accordingly: distances.size() + 1 (vel)
+    // adapt the amount of input nodes of the NeuralNet accordingly: distances.size() + 1 (speed)
     private void adaptControls() {
-        ArrayList<Double> inputs = distances;
-        ArrayList<Double> control = this.neuralNet.returnOutputs(inputs);
-        this.vel += control.get(0);
-        this.heading += control.get(1);
+        ArrayList<Double> control = neuralNet.returnOutputs(distances);
+        speed += control.get(0);
+        heading += control.get(1);
     }
 
     private void updatePosition() {
         if (!isAlive()) {
-            this.clr = color(255, 0, 0);
-            this.vel = 0.0;
+            color = new Color(255, 0, 0);
+            speed = 0.0;
             return;
         }
-        double deltaX = this.vel * cos(this.heading);
-        double deltaY = this.vel * sin(this.heading);
+        double deltaX = speed * cos(heading);
+        double deltaY = speed * sin(heading);
 
-        this.pos.x += deltaX;
-        this.pos.y += deltaY;
-
+        position = new Point2D.Double(position.getX() + deltaX, position.getY() + deltaY);
         drivenDistance += abs(deltaX) + abs(deltaY);
     }
 
     protected double getFitness() {
-        this.fitness = dist(this.pos.x, this.pos.y, 0, 0);
-        return this.fitness;
+        // distance to top-left corner
+        this.fitness = position.distance(0, 0);
+        return fitness;
     }
 
     public void show() {
@@ -129,51 +137,39 @@ public class Car {
     }
 
     public void show(boolean highlight) {
-        rectMode(CENTER);
-        if (highlight) {
-            fill(color(255, 255, 0));
-        } else if (!this.isAlive) {
-            fill(this.clr, 50);
-        } else {
-            fill(this.clr);
-        }
-        stroke(0);
-        pushMatrix();
-        translate(this.pos.x, this.pos.y);
-        rotate(this.heading);
-        rect(0, 0, 20, 10);
-        ellipse(5, 0, 3, 3);
-        popMatrix();
+        // TODO implement
     }
 
     private int convertCoordinateToIndex(double x, double y) {
-        return floor(x) + floor(y) * width;
+        return (int) (floor(x) + floor(y) * App.MAP_WIDTH);
     }
 
     public boolean isAlive() {
         // skip computation, if we already know from prev loop, that car is not alive
-        if (!this.isAlive) {
+        if (!isAlive) {
             return false;
         }
 
-        double x = pos.x;
-        double y = pos.y;
+        double x = position.getX();
+        double y = position.getY();
 
         if (this.isInsideCanvas(x, y) && this.isOnTrack(x, y)) {
             return true;
         } else {
-            this.isAlive = false;
+            isAlive = false;
             return false;
         }
     }
 
     private boolean isOnTrack(double x, double y) {
-        return red(backgroundPixels[convertCoordinateToIndex(x, y)]) == red(streetColor)
-                && green(backgroundPixels[convertCoordinateToIndex(x, y)]) == green(streetColor)
-                && blue(backgroundPixels[convertCoordinateToIndex(x, y)]) == blue(streetColor);
+        // TODO
+        return true;
+//        return red(backgroundPixels[convertCoordinateToIndex(x, y)]) == red(streetColor)
+//                && green(backgroundPixels[convertCoordinateToIndex(x, y)]) == green(streetColor)
+//                && blue(backgroundPixels[convertCoordinateToIndex(x, y)]) == blue(streetColor);
     }
 
     private boolean isInsideCanvas(double x, double y) {
-        return x > 0 && x < width && y > 0 && y < height;
+        return x > 0 && x < App.MAP_WIDTH && y > 0 && y < App.MAP_HEIGHT;
     }
 }

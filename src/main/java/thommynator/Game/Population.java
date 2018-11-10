@@ -1,24 +1,32 @@
 package thommynator.Game;
 
+import lombok.extern.slf4j.Slf4j;
 import thommynator.NeuralNetwork.NeuralNet;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+@Slf4j
 class Population {
     private int amountOfCars;
     private ArrayList<Car> cars;
 
     public Population(int amountOfCars) {
+        log.debug("Create a new population with " + amountOfCars + " cars.");
         this.amountOfCars = amountOfCars;
 
         cars = new ArrayList<>();
         for (int i = 0; i < amountOfCars; i++) {
-            cars.add(new Car(new PVector(10, 10)));
+            cars.add(new Car(new Point2D.Double(10, 10)));
         }
     }
 
-    // Resampling Wheel
+    /**
+     * Generate a new population of cars from the current one.
+     * Cars with a high {@link Car#fitness} have a better chance to survive.
+     */
     private void nextGeneration() {
         ArrayList<Car> children = new ArrayList<>();
 
@@ -26,9 +34,10 @@ class Population {
         Car bestCar = this.getBestCar();
 
         Car child = this.generateChild(bestCar);
-        child.clr = color(0, 255, 0);
+        child.setColor(new Color(0, 255, 0));
         children.add(child);
 
+        // Resampling Wheel
         double maxScore = bestCar.getFitness();
         double beta = 0.0;
         int index = new Random().nextInt(amountOfCars);
@@ -44,15 +53,16 @@ class Population {
     }
 
     private Car generateChild(Car parent) {
-        return new Car(new PVector(10, 10), new NeuralNet(parent.getNeuralNet()));
+        return new Car(new Point2D.Double(10, 10), new NeuralNet(parent.getNeuralNet()));
     }
 
     private Car mutateChild(Car child) {
-        child.getNeuralNet().mutate(new Random().nextDouble() * 0.2);
+        double mutationRate = 0.2;
+        child.getNeuralNet().mutate(new Random().nextDouble() * mutationRate);
         return child;
     }
 
-    private Car getBestCar() {
+    private Car getBestCar() throws NullPointerException {
         double bestScore = 0;
         Car bestCar = null;
         for (Car car : cars) {
@@ -60,7 +70,13 @@ class Population {
             if (score > bestScore) {
                 bestScore = score;
                 bestCar = car;
+                log.debug("The best car has a fitness of " + bestCar.getFitness(), bestCar);
             }
+        }
+
+        if (bestCar == null) {
+            log.error("Not possible to find the best car. Best car is now null!");
+            throw new NullPointerException("Not possible to find the best car.");
         }
         return bestCar;
     }
@@ -71,25 +87,21 @@ class Population {
                 return true;
             }
         }
+        log.debug("All cars are dead.");
         return false;
     }
 
     private void overrideAllWithBest() {
-        for (Car car : cars) {
-            car.setNeuralNet(new NeuralNet(this.getBestCar().getNeuralNet()));
-        }
+        NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
+        cars.forEach(car -> car.setNeuralNet(bestNeuralNet));
     }
 
     private void update() {
-        for (Car car : cars) {
-            car.updateState();
-        }
+        cars.forEach(Car::updateState);
     }
 
     private void show() {
-        for (int c = cars.size() - 1; c >= 0; c--) {
-            cars.get(c).show();
-        }
+        cars.forEach(Car::show);
 
         // highlight best car
         this.getBestCar().show(true);
