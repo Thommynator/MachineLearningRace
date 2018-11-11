@@ -11,4 +11,14 @@ public class Utils {
     public static double random(double lowerBound, double higherBound) {
         return ThreadLocalRandom.current().nextDouble(lowerBound, higherBound);
     }
+
+    public static double constrain(double value, double lowerBound, double upperBound) {
+        if (value < lowerBound) {
+            return lowerBound;
+        }
+        if (value > upperBound) {
+            return upperBound;
+        }
+        return value;
+    }
 }

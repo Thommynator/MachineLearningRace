@@ -21,16 +21,6 @@ public class Perceptron {
         weights = new ArrayList<>(inputWeights);
     }
 
-    private static double constrain(double value, double lowerBound, double upperBound) {
-        if (value < lowerBound) {
-            return lowerBound;
-        }
-        if (value > upperBound) {
-            return upperBound;
-        }
-        return value;
-    }
-
     public double getOutput(ArrayList<Double> inputs) {
         double summedWeightedInputs = 0.0;
         for (int i = 0; i < inputs.size(); i++) {
@@ -43,7 +33,7 @@ public class Perceptron {
         for (int i = 0; i < weights.size(); i++) {
             double w = weights.get(i);
             double noise = Utils.random(-mutationRate, mutationRate);
-            weights.set(i, constrain(w + noise, -1, 1));
+            weights.set(i, Utils.constrain(w + noise, -1, 1));
         }
     }
 
