@@ -1,7 +1,7 @@
 package thommynator;
 
-import thommynator.Game.Car;
-import thommynator.Game.CarDrawer;
+import thommynator.Game.Population;
+import thommynator.Game.PopulationDrawer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,10 +23,9 @@ public class App extends JFrame {
     }
 
     private void initUI() {
-        add(new CarDrawer(new Car(new Point(20, 20))));
+        add(new PopulationDrawer(new Population(50)));
         setSize(MAP_WIDTH, MAP_HEIGHT);
         setResizable(false);
-//        pack();
         setTitle("ML-Race");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

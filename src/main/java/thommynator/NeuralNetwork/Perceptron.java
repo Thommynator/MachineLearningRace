@@ -1,9 +1,9 @@
 package thommynator.NeuralNetwork;
 
 import lombok.Getter;
+import thommynator.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Perceptron {
 
@@ -13,7 +13,7 @@ public class Perceptron {
     public Perceptron(int amountOfWeights) {
         this.weights = new ArrayList<>(amountOfWeights);
         for (int i = 0; i < amountOfWeights; i++) {
-            weights.add(this.random(-1, 1));
+            weights.add(Utils.random(-1, 1));
         }
     }
 
@@ -42,7 +42,7 @@ public class Perceptron {
     public void mutateWeights(double mutationRate) {
         for (int i = 0; i < weights.size(); i++) {
             double w = weights.get(i);
-            double noise = this.random(-mutationRate, mutationRate);
+            double noise = Utils.random(-mutationRate, mutationRate);
             weights.set(i, constrain(w + noise, -1, 1));
         }
     }
@@ -50,9 +50,5 @@ public class Perceptron {
     // Sigmoid Function from -1 to +1
     private double activationFunction(double x) {
         return 2.0 / (1 + Math.exp(-x)) - 1;
-    }
-
-    private double random(double lowerBound, double higherBound) {
-        return ThreadLocalRandom.current().nextDouble(lowerBound, higherBound);
     }
 }

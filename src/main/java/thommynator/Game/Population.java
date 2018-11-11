@@ -1,5 +1,6 @@
 package thommynator.Game;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import thommynator.NeuralNetwork.NeuralNet;
 
@@ -9,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 @Slf4j
-class Population {
+public class Population {
     private int amountOfCars;
+
+    @Getter
     private ArrayList<Car> cars;
 
     public Population(int amountOfCars) {
@@ -27,7 +30,7 @@ class Population {
      * Generate a new population of cars from the current one.
      * Cars with a high {@link Car#fitness} have a better chance to survive.
      */
-    private void nextGeneration() {
+    public void nextGeneration() {
         ArrayList<Car> children = new ArrayList<>();
 
         // make sure, that the best car is for sure in the new population
@@ -81,7 +84,7 @@ class Population {
         return bestCar;
     }
 
-    private boolean isAlive() {
+    public boolean isAlive() {
         for (Car car : cars) {
             if (car.isAlive()) {
                 return true;

@@ -3,18 +3,16 @@ package thommynator.Game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
+import java.awt.geom.Ellipse2D;
 
-public class CarDrawer extends JPanel implements Runnable {
+public class PopulationDrawer extends JPanel implements Runnable {
 
-    private final int INITIAL_X = 50;
-    private final int INITIAL_Y = 50;
-    private final int DELAY = 5;
+    private final int DELAY = 10;
     private Thread animator;
-    private Car car;
+    private Population population;
 
-    public CarDrawer(Car car) {
-        this.car = car;
+    public PopulationDrawer(Population population) {
+        this.population = population;
     }
 
     @Override
@@ -38,7 +36,6 @@ public class CarDrawer extends JPanel implements Runnable {
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 String msg = String.format("Thread interrupted: %s", e.getMessage());
-
                 JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
             }
             beforeTime = System.currentTimeMillis();
@@ -48,7 +45,7 @@ public class CarDrawer extends JPanel implements Runnable {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        drawCar(graphics);
+        population.getCars().forEach(car -> drawCar(graphics, car));
     }
 
     @Override
@@ -59,13 +56,13 @@ public class CarDrawer extends JPanel implements Runnable {
     }
 
     private void cycle() {
-        car.updatePosition();
-        if (!car.isAlive()) {
-            car = new Car(new Point2D.Double(INITIAL_X, INITIAL_Y));
+        population.getCars().forEach(Car::updateState);
+        if (!population.isAlive()) {
+            population.nextGeneration();
         }
     }
 
-    private void drawCar(Graphics g) {
+    private void drawCar(Graphics g, Car car) {
         Graphics2D graphics = (Graphics2D) g;
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -75,13 +72,15 @@ public class CarDrawer extends JPanel implements Runnable {
         int carLength = car.getLength();
 
         Rectangle rect = new Rectangle(0, 0, carLength, carWidth);
+        Ellipse2D scanner = new Ellipse2D.Double(15, 3, 4, 4);
         graphics.setStroke(new BasicStroke(2));
-        graphics.setColor(Color.gray);
+        graphics.setColor(car.getColor());
 
         double x = car.getPosition().getX() - carWidth / 2.0;
         double y = car.getPosition().getY() - carLength / 2.0;
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
         at.rotate(car.getHeading());
         graphics.draw(at.createTransformedShape(rect));
+        graphics.draw(at.createTransformedShape(scanner));
     }
 }

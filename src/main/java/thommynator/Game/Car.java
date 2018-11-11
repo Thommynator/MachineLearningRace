@@ -9,18 +9,17 @@ import thommynator.utils.Utils;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Random;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
-import static java.lang.Math.max;
 import static java.lang.Math.sin;
 
 @Slf4j
 @Data
 public class Car {
+
     // state
     private Point2D position;
     private double heading;
@@ -37,29 +36,31 @@ public class Car {
     // appearance
     private int width;
     private int length;
+    private boolean highlight;
     private Color color;
 
     public Car(Point2D position) {
         this.position = position;
-        this.heading = 0; // in radian
-        this.speed = max(1, new Random().nextDouble() * 5);
+        this.heading = Math.toRadians(Utils.random(0, 90)); // in radian
+        this.speed = Utils.random(0.5, 3.0);
         this.drivenDistance = 0.0;
         this.isAlive = true;
         this.fitness = 0.0;
         int hiddenNodes = 6;
+        this.nSensors = 9;
         this.neuralNet = new NeuralNet(nSensors, hiddenNodes, 2);
 
-        this.nSensors = 9;
         this.distances = new ArrayList<>(nSensors);
 
         this.width = 10;
         this.length = 20;
-        this.color = new Color(240, 240, 255);
+        this.color = new Color(55, 55, 55);
+        this.highlight = false;
     }
 
     public Car(Point2D position, NeuralNet neuralNet) {
         this(position);
-        this.neuralNet = neuralNet;
+        this.neuralNet = new NeuralNet(neuralNet);
     }
 
     public void updateState() {
@@ -117,7 +118,7 @@ public class Car {
         heading += control.get(1);
     }
 
-    public void updatePosition() {
+    private void updatePosition() {
         if (!isAlive()) {
             color = new Color(255, 0, 0);
             speed = 0.0;
@@ -159,7 +160,7 @@ public class Car {
     }
 
     private boolean isOnTrack(double x, double y) {
-        // TODO
+        // TODO implementation needed
         return true;
 //        return red(backgroundPixels[convertCoordinateToIndex(x, y)]) == red(streetColor)
 //                && green(backgroundPixels[convertCoordinateToIndex(x, y)]) == green(streetColor)
@@ -167,6 +168,6 @@ public class Car {
     }
 
     private boolean isInsideCanvas(double x, double y) {
-        return x > 0 && x < App.MAP_WIDTH && y > 0 && y < App.MAP_HEIGHT;
+        return x > 0 && x < App.MAP_WIDTH - 50 && y > 0 && y < App.MAP_HEIGHT - 50;
     }
 }
