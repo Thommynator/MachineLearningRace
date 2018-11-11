@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 public class PopulationDrawer extends JPanel implements Runnable {
 
     private final int DELAY = 10;
+    private final long MAX_EPOCH_TIME = 15000; // hard reset after this milliseconds
     private Thread animator;
     private Population population;
 
@@ -17,15 +19,23 @@ public class PopulationDrawer extends JPanel implements Runnable {
 
     @Override
     public void run() {
+        long epochStartTime = System.currentTimeMillis();
         long beforeTime = System.currentTimeMillis();
         long timeDiff;
         long sleep;
 
         while (true) {
+
             cycle();
             repaint();
 
-            timeDiff = System.currentTimeMillis() - beforeTime;
+            long now = System.currentTimeMillis();
+            if (now - epochStartTime > MAX_EPOCH_TIME) {
+                epochStartTime = now;
+                population.nextGeneration();
+            }
+
+            timeDiff = now - beforeTime;
             sleep = DELAY - timeDiff;
 
             if (sleep < 0) {
@@ -56,7 +66,7 @@ public class PopulationDrawer extends JPanel implements Runnable {
     }
 
     private void cycle() {
-        population.getCars().forEach(Car::updateState);
+        population.update();
         if (!population.isAlive()) {
             population.nextGeneration();
         }
@@ -71,16 +81,28 @@ public class PopulationDrawer extends JPanel implements Runnable {
         int carWidth = car.getWidth();
         int carLength = car.getLength();
 
+        // FIXME the visualization of the cars seems buggy. The center is not at the expected position (e.g. during collision)
         Rectangle rect = new Rectangle(0, 0, carLength, carWidth);
-        Ellipse2D scanner = new Ellipse2D.Double(15, 3, 4, 4);
+        Ellipse2D scanner = new Ellipse2D.Double((int) (0.75 * car.getLength()), 3, 4, 4);
         graphics.setStroke(new BasicStroke(2));
         graphics.setColor(car.getColor());
 
-        double x = car.getPosition().getX() - carWidth / 2.0;
-        double y = car.getPosition().getY() - carLength / 2.0;
-        AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-        at.rotate(car.getHeading());
-        graphics.draw(at.createTransformedShape(rect));
-        graphics.draw(at.createTransformedShape(scanner));
+        AffineTransform translateToOrigin = AffineTransform.getTranslateInstance(-carLength / 2.0, -carWidth / 2.0);
+        AffineTransform rotateHeading = AffineTransform.getRotateInstance(car.getHeading());
+        AffineTransform transformToCar = AffineTransform.getTranslateInstance(car.getPosition().getX(), car.getPosition().getY());
+
+        AffineTransform at = new AffineTransform();
+//        at.concatenate(translateToOrigin);
+//        at.concatenate(rotateHeading);
+//        at.preConcatenate(transformToCar);
+//        graphics.draw(at.createTransformedShape(rect));
+//        graphics.draw(at.createTransformedShape(scanner));
+
+        graphics.setColor(Color.BLUE);
+        graphics.draw(new Rectangle2D.Double((int) car.getPosition().getX(), (int) car.getPosition().getY(), 1, 1));
+        // id
+//        graphics.setColor(Color.BLACK);
+//        graphics.setFont(new Font("Arial", Font.PLAIN, 10));
+//        graphics.drawString(String.valueOf(car.getId()), (int) car.getPosition().getX(), (int) car.getPosition().getY());
     }
 }
