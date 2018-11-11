@@ -1,7 +1,7 @@
 package thommynator.Game;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import thommynator.App;
 import thommynator.NeuralNetwork.NeuralNet;
 import thommynator.utils.Utils;
@@ -18,38 +18,43 @@ import static java.lang.Math.floor;
 import static java.lang.Math.max;
 import static java.lang.Math.sin;
 
+@Slf4j
+@Data
 public class Car {
+    // state
     private Point2D position;
     private double heading;
     private double speed;
+    private double drivenDistance;
+    private boolean isAlive;
+    private double fitness;
+    private NeuralNet neuralNet;
 
-    @Setter
-    private Color color;
-
+    // sensor inputs
     private int nSensors;
     private ArrayList<Double> distances;
 
-    private double drivenDistance;
-    private boolean isAlive;
-
-    private double fitness;
-
-    @Getter
-    @Setter
-    private NeuralNet neuralNet;
+    // appearance
+    private int width;
+    private int length;
+    private Color color;
 
     public Car(Point2D position) {
         this.position = position;
-        this.heading = PI / 2;
+        this.heading = 0; // in radian
         this.speed = max(1, new Random().nextDouble() * 5);
-        this.color = new Color(240, 240, 255);
-        this.nSensors = 9;
-        this.distances = new ArrayList<>(nSensors);
         this.drivenDistance = 0.0;
         this.isAlive = true;
-
+        this.fitness = 0.0;
         int hiddenNodes = 6;
         this.neuralNet = new NeuralNet(nSensors, hiddenNodes, 2);
+
+        this.nSensors = 9;
+        this.distances = new ArrayList<>(nSensors);
+
+        this.width = 10;
+        this.length = 20;
+        this.color = new Color(240, 240, 255);
     }
 
     public Car(Point2D position, NeuralNet neuralNet) {
@@ -106,14 +111,13 @@ public class Car {
         return Utils.map(dist, 0, maxDist, 0, 1);
     }
 
-    // adapt the amount of input nodes of the NeuralNet accordingly: distances.size() + 1 (speed)
     private void adaptControls() {
         ArrayList<Double> control = neuralNet.returnOutputs(distances);
         speed += control.get(0);
         heading += control.get(1);
     }
 
-    private void updatePosition() {
+    public void updatePosition() {
         if (!isAlive()) {
             color = new Color(255, 0, 0);
             speed = 0.0;
@@ -124,20 +128,13 @@ public class Car {
 
         position = new Point2D.Double(position.getX() + deltaX, position.getY() + deltaY);
         drivenDistance += abs(deltaX) + abs(deltaY);
+        log.debug("Updated position. x: " + position.getX() + " y: " + position.getY());
     }
 
     protected double getFitness() {
         // distance to top-left corner
         this.fitness = position.distance(0, 0);
         return fitness;
-    }
-
-    public void show() {
-        this.show(false);
-    }
-
-    public void show(boolean highlight) {
-        // TODO implement
     }
 
     private int convertCoordinateToIndex(double x, double y) {

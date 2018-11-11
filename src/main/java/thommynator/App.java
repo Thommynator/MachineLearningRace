@@ -1,13 +1,11 @@
 package thommynator;
 
-import thommynator.Game.Canvas;
+import thommynator.Game.Car;
+import thommynator.Game.CarDrawer;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Hello world!
- */
 public class App extends JFrame {
 
     public final static int MAP_WIDTH = 800;
@@ -25,8 +23,10 @@ public class App extends JFrame {
     }
 
     private void initUI() {
-        add(new Canvas());
+        add(new CarDrawer(new Car(new Point(20, 20))));
         setSize(MAP_WIDTH, MAP_HEIGHT);
+        setResizable(false);
+//        pack();
         setTitle("ML-Race");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

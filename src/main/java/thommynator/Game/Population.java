@@ -99,11 +99,4 @@ class Population {
     private void update() {
         cars.forEach(Car::updateState);
     }
-
-    private void show() {
-        cars.forEach(Car::show);
-
-        // highlight best car
-        this.getBestCar().show(true);
-    }
 }
