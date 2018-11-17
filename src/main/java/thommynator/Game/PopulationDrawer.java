@@ -87,16 +87,20 @@ public class PopulationDrawer extends JPanel implements Runnable {
         graphics.setStroke(new BasicStroke(2));
         graphics.setColor(car.getColor());
 
-        AffineTransform translateToOrigin = AffineTransform.getTranslateInstance(-carLength / 2.0, -carWidth / 2.0);
-        AffineTransform rotateHeading = AffineTransform.getRotateInstance(car.getHeading());
-        AffineTransform transformToCar = AffineTransform.getTranslateInstance(car.getPosition().getX(), car.getPosition().getY());
+        AffineTransform transformToOrigin = AffineTransform.getTranslateInstance(-carLength / 2.0, -carWidth / 2.0);
+        AffineTransform transformToHeading = AffineTransform.getRotateInstance(car.getHeading());
+        AffineTransform transformToDestination = AffineTransform.getTranslateInstance(
+                car.getPosition().getX(), car.getPosition().getY());
 
+
+        // build final transform matrix, order matters
         AffineTransform at = new AffineTransform();
-//        at.concatenate(translateToOrigin);
-//        at.concatenate(rotateHeading);
-//        at.preConcatenate(transformToCar);
-//        graphics.draw(at.createTransformedShape(rect));
-//        graphics.draw(at.createTransformedShape(scanner));
+        at.concatenate(transformToDestination);
+        at.concatenate(transformToHeading);
+        at.concatenate(transformToOrigin);
+
+        graphics.draw(at.createTransformedShape(rect));
+        graphics.draw(at.createTransformedShape(scanner));
 
         graphics.setColor(Color.BLUE);
         graphics.draw(new Rectangle2D.Double((int) car.getPosition().getX(), (int) car.getPosition().getY(), 1, 1));

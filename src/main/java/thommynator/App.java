@@ -30,7 +30,7 @@ public class App extends JFrame {
     }
 
     private void initUI() {
-        add(new PopulationDrawer(new Population(50)));
+        add(new PopulationDrawer(new Population(100)));
         setSize(MAP_WIDTH, MAP_HEIGHT);
         setBackground(new Color(200, 200, 200));
         setResizable(false);
