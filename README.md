@@ -1,5 +1,13 @@
 # Machine Learning Race
 
+
+
+#### Build Status
+
+| master | develop |
+|--------|---------|
+| ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=master) | ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=develop) |
+
 #### General Idea
 This project uses a genetic machine learning algorithm to control some
 little _cars_. The project is a work in progress and just started, so
