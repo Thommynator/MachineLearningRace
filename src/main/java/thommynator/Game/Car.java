@@ -181,10 +181,10 @@ public class Car {
     }
 
     private boolean isInsideCanvas(double x, double y) {
-        int buffer = 10;
+        int buffer = 20;
         return x > buffer
-                && x < App.MAP_WIDTH - buffer
+                && x < (App.MAP_WIDTH - buffer)
                 && y > buffer
-                && y < App.MAP_HEIGHT - buffer;
+                && y < (App.MAP_HEIGHT - buffer);
     }
 }
