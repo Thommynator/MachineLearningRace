@@ -49,7 +49,7 @@ public class Car {
         this.isAlive = true;
         this.fitness = 0.0;
         int hiddenNodes = 6;
-        this.nSensors = 9;
+        this.nSensors = 3;
         this.neuralNet = new NeuralNet(nSensors, hiddenNodes, 2);
         this.distances = new ArrayList<>(nSensors);
 
@@ -65,7 +65,7 @@ public class Car {
     }
 
     public void updateState() {
-        if (isAlive()) {
+        if (this.isAlive()) {
             this.measureDistances();
             this.adaptControls();
             this.updatePosition();
@@ -95,10 +95,7 @@ public class Car {
     private double rayDistance(double angle) {
         double x = position.getX();
         double y = position.getY();
-        while (isInsideCanvas(x, y)) {
-            if (!isOnTrack(x, y)) {
-                break;
-            }
+        while (isAlive((int) x, (int) y)) {
             x += cos(angle) * 2;
             y += sin(angle) * 2;
         }
@@ -120,10 +117,10 @@ public class Car {
      */
     private void adaptControls() {
         ArrayList<Double> control = neuralNet.returnOutputs(distances);
-        double speedChangeLimit = 5.0;
+        double speedLimit = 5.0;
         double headingChangeLimit = 1.0;
         // backwards driving cars are slower
-        speed = Utils.constrain(speed + control.get(0), -speedChangeLimit * 0.3, speedChangeLimit);
+        speed = Utils.constrain(speed + control.get(0), -speedLimit * 0.3, speedLimit);
         heading += Utils.constrain(control.get(1), -headingChangeLimit, headingChangeLimit);
     }
 
@@ -135,23 +132,18 @@ public class Car {
         double deltaX = speed * cos(heading);
         double deltaY = speed * sin(heading);
 
-        if (!isInsideCanvas(position.getX() + deltaX, position.getY() + deltaY)) {
+        if (!isAlive((int) (position.getX() + deltaX), (int) (position.getY() + deltaY))) {
             this.isAlive = false;
             return;
         }
         position = new Point2D.Double(position.getX() + deltaX, position.getY() + deltaY);
         drivenDistance += abs(deltaX) + abs(deltaY);
-        log.trace("Updated car #" + id + " position. x: " + position.getX() + " y: " + position.getY());
     }
 
     protected double getFitness() {
         // distance to top-left corner
         this.fitness = Math.pow(position.distance(0, 0), 2);
         return fitness;
-    }
-
-    private int convertCoordinateToIndex(double x, double y) {
-        return (int) (floor(x) + floor(y) * App.MAP_WIDTH);
     }
 
     public boolean isAlive() {
@@ -164,7 +156,7 @@ public class Car {
         double x = position.getX();
         double y = position.getY();
 
-        if (this.isInsideCanvas(x, y) && this.isOnTrack(x, y)) {
+        if (this.isInsideCanvas(x, y) && this.isOnTrack(App.racetrack, x, y)) {
             return true;
         } else {
             isAlive = false;
@@ -172,12 +164,20 @@ public class Car {
         }
     }
 
-    private boolean isOnTrack(double x, double y) {
-        // TODO implementation needed
-        return true;
-//        return red(backgroundPixels[convertCoordinateToIndex(x, y)]) == red(streetColor)
-//                && green(backgroundPixels[convertCoordinateToIndex(x, y)]) == green(streetColor)
-//                && blue(backgroundPixels[convertCoordinateToIndex(x, y)]) == blue(streetColor);
+    /**
+     * Checks if a car would be alive, if it would be at a specific coordinate.
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @return true if it would be alive, otherwise false.
+     */
+    private boolean isAlive(int x, int y) {
+        return this.isInsideCanvas(x, y) && this.isOnTrack(App.racetrack, x, y);
+    }
+
+    private boolean isOnTrack(Racetrack racetrack, double x, double y) {
+        int positionColorInt = racetrack.getImage().getRGB((int) x, (int) y);
+        return positionColorInt == Racetrack.FOREGROUND_COLOR.getRGB();
     }
 
     private boolean isInsideCanvas(double x, double y) {

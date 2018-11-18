@@ -41,9 +41,4 @@ public class PerceptronTest {
             assertThat(weights.get(i)).isBetween(-1.0, 1.0);
         }
     }
-
-    @Test
-    public void mutateWeightsTest() {
-
-    }
 }

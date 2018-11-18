@@ -32,6 +32,7 @@ public class Population {
      * Cars with a high {@link Car#fitness} have a better chance to survive.
      */
     public void nextGeneration() {
+        log.debug("Creating new generation...");
         ArrayList<Car> children = new ArrayList<>();
 
         // make sure, that the best car is for sure in the new population
