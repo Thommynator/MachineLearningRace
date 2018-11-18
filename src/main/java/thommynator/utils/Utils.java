@@ -21,4 +21,8 @@ public class Utils {
         }
         return value;
     }
+
+    public static boolean areEqual(double a, double b) {
+        return Math.abs(a - b) < 1E-10;
+    }
 }
