@@ -1,7 +1,5 @@
 # Machine Learning Race
 
-
-
 #### Build Status
 
 | master | develop |
@@ -26,6 +24,7 @@ hopefully. :P
 
 * ~~simple moving cars~~
 * race-track generator
+* add traces to each car, which visualize the driven path
 * fitness function
 * debug neural network
 * fancy looking cars (image)
