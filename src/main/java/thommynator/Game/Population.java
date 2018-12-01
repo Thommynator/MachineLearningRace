@@ -18,7 +18,7 @@ public class Population {
     private ArrayList<Car> cars;
 
     public Population(int amountOfCars) {
-        log.debug("Create a new population with " + amountOfCars + " cars.");
+        log.debug("Create a new population with {} cars.", amountOfCars);
         this.amountOfCars = amountOfCars;
 
         cars = new ArrayList<>();
@@ -32,6 +32,7 @@ public class Population {
      * Cars with a high {@link Car#fitness} have a better chance to survive.
      */
     public void nextGeneration() {
+        log.debug("Creating new generation...");
         ArrayList<Car> children = new ArrayList<>();
 
         // make sure, that the best car is for sure in the new population
@@ -61,7 +62,7 @@ public class Population {
     }
 
     private Car mutateChild(Car child) {
-        double mutationRate = 1E-2;
+        double mutationRate = 0.05;
         child.getNeuralNet().mutate(new Random().nextDouble() * mutationRate);
         return child;
     }
@@ -82,7 +83,7 @@ public class Population {
             throw new NullPointerException("Not possible to find the best car.");
         }
 
-        log.debug("The best car #" + bestCar.getId() + " has a fitness of " + bestCar.getFitness(), bestCar);
+        log.debug("The best car #{} has a fitness of {}.", bestCar.getId(), bestCar.getFitness(), bestCar);
         return bestCar;
     }
 
@@ -98,10 +99,10 @@ public class Population {
 
     private void overrideAllWithBest() {
         NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
-        cars.forEach(car -> car.setNeuralNet(bestNeuralNet));
+        cars.parallelStream().forEach(car -> car.setNeuralNet(bestNeuralNet));
     }
 
     public void update() {
-        cars.forEach(Car::updateState);
+        cars.parallelStream().forEach(Car::updateState);
     }
 }
