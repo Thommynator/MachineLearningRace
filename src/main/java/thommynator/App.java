@@ -33,7 +33,7 @@ public class App extends JFrame {
     }
 
     private void initUI() {
-        add(new Drawer(new Population(100)));
+        add(new Drawer(new Population(200)));
         setSize(MAP_WIDTH + 10, MAP_HEIGHT + 30); // some buffer to make everything visible
         setBackground(Racetrack.BACKGROUND_COLOR);
         setResizable(false);

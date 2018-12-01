@@ -115,7 +115,6 @@ public class Drawer extends JPanel implements Runnable {
     }
 
     private void drawRacetrack(Graphics g) {
-        App.racetrack.createTrack();
         g.drawImage(App.racetrack.image, 0, 0, null);
     }
 }
