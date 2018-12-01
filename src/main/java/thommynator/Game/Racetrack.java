@@ -21,19 +21,26 @@ public class Racetrack {
     BufferedImage image;
 
     public Racetrack() {
-        image = new BufferedImage(App.MAP_WIDTH, App.MAP_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
         roadWidth = 150;
         anchorPoints = Arrays.asList(
                 new Point2D.Double(0.0, 0.0),
+                new Point2D.Double(0.7 * App.MAP_WIDTH, 0.2 * App.MAP_HEIGHT),
+                new Point2D.Double(0.5 * App.MAP_WIDTH, 0.4 * App.MAP_HEIGHT),
                 new Point2D.Double(App.MAP_WIDTH, App.MAP_HEIGHT));
+        image = createTrack();
     }
 
-    public void createTrack() {
+    public BufferedImage createTrack() {
+        BufferedImage image = new BufferedImage(App.MAP_WIDTH, App.MAP_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D graphics = image.createGraphics();
         graphics.setColor(BACKGROUND_COLOR);
         graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
         graphics.setColor(FOREGROUND_COLOR);
         graphics.setStroke(new BasicStroke(roadWidth));
-        graphics.draw(new Line2D.Double(anchorPoints.get(0), anchorPoints.get(1)));
+        for (int i = 0; i < anchorPoints.size() - 1; i++) {
+            graphics.draw(new Line2D.Double(anchorPoints.get(i), anchorPoints.get(i + 1)));
+        }
+        return image;
     }
+
 }

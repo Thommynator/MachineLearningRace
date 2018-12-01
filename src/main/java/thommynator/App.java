@@ -21,7 +21,6 @@ public class App extends JFrame {
     public App() {
         initUI();
         racetrack = new Racetrack();
-        racetrack.createTrack();
     }
 
     public static void main(String[] args) {
@@ -34,7 +33,7 @@ public class App extends JFrame {
     }
 
     private void initUI() {
-        add(new Drawer(new Population(50)));
+        add(new Drawer(new Population(100)));
         setSize(MAP_WIDTH + 10, MAP_HEIGHT + 30); // some buffer to make everything visible
         setBackground(Racetrack.BACKGROUND_COLOR);
         setResizable(false);

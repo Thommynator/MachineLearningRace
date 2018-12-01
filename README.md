@@ -20,17 +20,23 @@ hopefully. :P
 
 ![](src/main/resources/demo.png)
 
-### How to run the project:
+### How to run the project
 This project uses [Maven](http://maven.apache.org/) as a build-tool, so
 make sure to download it and set it up on your machine.
 * Build the project with `mvn clean package`
 * Run in with `mvn exec:java`
 
-### Remaining Tasks:
+### New Ideas / Remaining Tasks
 
 * ~~simple moving cars~~
 * race-track generator
-* add traces to each car, which visualize the driven path
+* interactive features like:
+    * show only best car, hide others
+    * change (increase/decrease/toggle) mutation rate
+    * add trace for each car, which visualizes the driven path
+    * use neural network of best car for all other cars
+    * save neural network of current best car
+    * load neural network
 * fitness function
 * debug neural network
 * fancy looking cars (image)

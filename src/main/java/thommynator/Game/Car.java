@@ -43,7 +43,7 @@ public class Car {
     public Car(Point2D position) {
         this.id = App.CAR_ID_FACTORY.incrementAndGet();
         this.position = position;
-        this.heading = Math.toRadians(Utils.random(0, 90)); // in radian
+        this.heading = Math.toRadians(Utils.random(35, 55)); // in radian
         this.speed = Utils.random(0.5, 3.0);
         this.drivenDistance = 0.0;
         this.isAlive = true;
@@ -118,7 +118,7 @@ public class Car {
     private void adaptControls() {
         ArrayList<Double> control = neuralNet.returnOutputs(distances);
         double speedLimit = 5.0;
-        double headingChangeLimit = 1.0;
+        double headingChangeLimit = 2.0;
         // backwards driving cars are slower
         speed = Utils.constrain(speed + control.get(0), -speedLimit * 0.3, speedLimit);
         heading += Utils.constrain(control.get(1), -headingChangeLimit, headingChangeLimit);

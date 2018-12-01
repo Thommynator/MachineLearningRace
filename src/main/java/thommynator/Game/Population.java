@@ -18,7 +18,7 @@ public class Population {
     private ArrayList<Car> cars;
 
     public Population(int amountOfCars) {
-        log.debug("Create a new population with " + amountOfCars + " cars.");
+        log.debug("Create a new population with {} cars.", amountOfCars);
         this.amountOfCars = amountOfCars;
 
         cars = new ArrayList<>();
@@ -83,7 +83,7 @@ public class Population {
             throw new NullPointerException("Not possible to find the best car.");
         }
 
-        log.debug("The best car #" + bestCar.getId() + " has a fitness of " + bestCar.getFitness(), bestCar);
+        log.debug("The best car #{} has a fitness of {}.", bestCar.getId(), bestCar.getFitness(), bestCar);
         return bestCar;
     }
 
