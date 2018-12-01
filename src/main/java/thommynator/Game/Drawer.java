@@ -12,7 +12,6 @@ public class Drawer extends JPanel implements Runnable {
 
     private final int DELAY = 10;
     private final long MAX_EPOCH_TIME = 15000; // hard reset after this milliseconds
-    private Thread animator;
     private Population population;
     private boolean showCarIds;
 
@@ -66,7 +65,7 @@ public class Drawer extends JPanel implements Runnable {
     @Override
     public void addNotify() {
         super.addNotify();
-        animator = new Thread(this);
+        Thread animator = new Thread(this);
         animator.start();
     }
 

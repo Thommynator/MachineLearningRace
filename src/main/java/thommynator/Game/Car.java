@@ -49,7 +49,7 @@ public class Car {
         this.isAlive = true;
         this.fitness = 0.0;
         int hiddenNodes = 6;
-        this.nSensors = 3;
+        this.nSensors = 5;
         this.neuralNet = new NeuralNet(nSensors, hiddenNodes, 2);
         this.distances = new ArrayList<>(nSensors);
 
@@ -146,17 +146,22 @@ public class Car {
         return fitness;
     }
 
+    /**
+     * Checks if a car at its current position is dead or alive.
+     * Alive means it is inside of the canvas and on the racetrack.
+     * The car status {@link Car#isAlive} and color {@link Car#color} will be adapted accordingly.
+     *
+     * @return true if alive, otherwise false
+     */
     public boolean isAlive() {
-        // skip computation, if we already know from prev loop, that car is not alive
+        // skip computation, if we already know from the previous loop, that the car is not alive
         if (!isAlive) {
             color = new Color(255, 0, 0);
             return false;
         }
 
-        double x = position.getX();
-        double y = position.getY();
-
-        if (this.isInsideCanvas(x, y) && this.isOnTrack(App.racetrack, x, y)) {
+        if (this.isAlive((int) position.getX(), (int) position.getY())) {
+            isAlive = true;
             return true;
         } else {
             isAlive = false;
@@ -166,6 +171,7 @@ public class Car {
 
     /**
      * Checks if a car would be alive, if it would be at a specific coordinate.
+     * The status of the car {@link Car#isAlive} stays unmodified.
      *
      * @param x coordinate
      * @param y coordinate
@@ -177,11 +183,12 @@ public class Car {
 
     private boolean isOnTrack(Racetrack racetrack, double x, double y) {
         int positionColorInt = racetrack.getImage().getRGB((int) x, (int) y);
-        return positionColorInt == Racetrack.FOREGROUND_COLOR.getRGB();
+        int trackColorInt = Racetrack.FOREGROUND_COLOR.getRGB();
+        return positionColorInt == trackColorInt;
     }
 
     private boolean isInsideCanvas(double x, double y) {
-        int buffer = 20;
+        int buffer = 0;
         return x > buffer
                 && x < (App.MAP_WIDTH - buffer)
                 && y > buffer

@@ -1,12 +1,12 @@
 # Machine Learning Race
 
-#### Build Status
+### Build Status
 
 | master | develop |
 |--------|---------|
 | ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=master) | ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=develop) |
 
-#### General Idea
+### General Idea
 This project uses a genetic machine learning algorithm to control some
 little _cars_. The project is a work in progress and just started, so
 a lot of features are not working yet.
@@ -20,7 +20,13 @@ hopefully. :P
 
 ![](src/main/resources/demo.png)
 
-#### Remaining Tasks:
+### How to run the project:
+This project uses [Maven](http://maven.apache.org/) as a build-tool, so
+make sure to download it and set it up on your machine.
+* Build the project with `mvn clean package`
+* Run in with `mvn exec:java`
+
+### Remaining Tasks:
 
 * ~~simple moving cars~~
 * race-track generator

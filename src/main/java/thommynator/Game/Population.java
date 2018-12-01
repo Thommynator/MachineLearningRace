@@ -62,7 +62,7 @@ public class Population {
     }
 
     private Car mutateChild(Car child) {
-        double mutationRate = 1E-2;
+        double mutationRate = 0.05;
         child.getNeuralNet().mutate(new Random().nextDouble() * mutationRate);
         return child;
     }
@@ -99,10 +99,10 @@ public class Population {
 
     private void overrideAllWithBest() {
         NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
-        cars.forEach(car -> car.setNeuralNet(bestNeuralNet));
+        cars.parallelStream().forEach(car -> car.setNeuralNet(bestNeuralNet));
     }
 
     public void update() {
-        cars.forEach(Car::updateState);
+        cars.parallelStream().forEach(Car::updateState);
     }
 }

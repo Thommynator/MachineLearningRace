@@ -22,7 +22,7 @@ public class Racetrack {
 
     public Racetrack() {
         image = new BufferedImage(App.MAP_WIDTH, App.MAP_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
-        roadWidth = 100;
+        roadWidth = 150;
         anchorPoints = Arrays.asList(
                 new Point2D.Double(0.0, 0.0),
                 new Point2D.Double(App.MAP_WIDTH, App.MAP_HEIGHT));
