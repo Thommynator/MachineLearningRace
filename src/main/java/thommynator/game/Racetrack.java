@@ -1,4 +1,4 @@
-package thommynator.Game;
+package thommynator.game;
 
 import lombok.Data;
 import thommynator.App;
@@ -13,8 +13,8 @@ import java.util.List;
 @Data
 public class Racetrack {
 
-    public final static Color FOREGROUND_COLOR = new Color(100, 100, 100);
-    public final static Color BACKGROUND_COLOR = new Color(200, 200, 200);
+    public static final Color FOREGROUND_COLOR = new Color(100, 100, 100);
+    public static final Color BACKGROUND_COLOR = new Color(200, 200, 200);
 
     int roadWidth;
     List<Point2D> anchorPoints;
@@ -31,16 +31,16 @@ public class Racetrack {
     }
 
     public BufferedImage createTrack() {
-        BufferedImage image = new BufferedImage(App.MAP_WIDTH, App.MAP_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
-        Graphics2D graphics = image.createGraphics();
+        BufferedImage img = new BufferedImage(App.MAP_WIDTH, App.MAP_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
+        Graphics2D graphics = img.createGraphics();
         graphics.setColor(BACKGROUND_COLOR);
-        graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
+        graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
         graphics.setColor(FOREGROUND_COLOR);
         graphics.setStroke(new BasicStroke(roadWidth));
         for (int i = 0; i < anchorPoints.size() - 1; i++) {
             graphics.draw(new Line2D.Double(anchorPoints.get(i), anchorPoints.get(i + 1)));
         }
-        return image;
+        return img;
     }
 
 }

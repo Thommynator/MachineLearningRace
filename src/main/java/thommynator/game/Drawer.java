@@ -1,4 +1,4 @@
-package thommynator.Game;
+package thommynator.game;
 
 import thommynator.App;
 
@@ -10,8 +10,8 @@ import java.awt.geom.Rectangle2D;
 
 public class Drawer extends JPanel implements Runnable {
 
-    private final int DELAY = 20;               // time in ms between each frame
-    private final long MAX_EPOCH_TIME = 15000;  // hard reset after this amount of milliseconds
+    private static final int DELAY = 20;               // time in ms between each frame
+    private static final long MAX_EPOCH_TIME = 15000;  // hard reset after this amount of milliseconds
     private Population population;
     private boolean showCarIds;
 
@@ -115,6 +115,6 @@ public class Drawer extends JPanel implements Runnable {
     }
 
     private void drawRacetrack(Graphics g) {
-        g.drawImage(App.racetrack.image, 0, 0, null);
+        g.drawImage(App.RACETRACK.image, 0, 0, null);
     }
 }

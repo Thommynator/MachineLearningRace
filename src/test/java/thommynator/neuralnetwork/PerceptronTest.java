@@ -1,4 +1,4 @@
-package thommynator.NeuralNetwork;
+package thommynator.neuralnetwork;
 
 import org.junit.Test;
 

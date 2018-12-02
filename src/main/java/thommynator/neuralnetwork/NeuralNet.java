@@ -1,6 +1,7 @@
-package thommynator.NeuralNetwork;
+package thommynator.neuralnetwork;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NeuralNet {
 
@@ -47,7 +48,7 @@ public class NeuralNet {
         }
     }
 
-    public ArrayList<Double> returnOutputs(ArrayList<Double> inputs) {
+    public List<Double> returnOutputs(List<Double> inputs) {
         ArrayList<Double> hiddenOutputs = new ArrayList<>(amountOfHiddenPerceptrons);
         for (int i = 0; i < amountOfHiddenPerceptrons; i++) {
             hiddenOutputs.add(hiddenPerceptrons.get(i).getOutput(inputs));

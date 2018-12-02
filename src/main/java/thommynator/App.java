@@ -1,8 +1,8 @@
 package thommynator;
 
-import thommynator.Game.Drawer;
-import thommynator.Game.Population;
-import thommynator.Game.Racetrack;
+import thommynator.game.Drawer;
+import thommynator.game.Population;
+import thommynator.game.Racetrack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,17 +10,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class App extends JFrame {
 
-    public final static int MAP_WIDTH = 800;
-    public final static int MAP_HEIGHT = 600;
-    public static Racetrack racetrack;
-    public final static int INITIAL_X = 30;
-    public final static int INITIAL_Y = 30;
-    public final static AtomicInteger CAR_ID_FACTORY = new AtomicInteger(0);
+    public static final int MAP_WIDTH = 800;
+    public static final int MAP_HEIGHT = 600;
+    public static final Racetrack RACETRACK = new Racetrack();
+    public static final int INITIAL_X = 30;
+    public static final int INITIAL_Y = 30;
+    public static final AtomicInteger CAR_ID_FACTORY = new AtomicInteger(0);
 
 
     public App() {
         initUI();
-        racetrack = new Racetrack();
     }
 
     public static void main(String[] args) {

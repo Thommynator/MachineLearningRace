@@ -1,9 +1,9 @@
-package thommynator.Game;
+package thommynator.game;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import thommynator.App;
-import thommynator.NeuralNetwork.NeuralNet;
+import thommynator.neuralnetwork.NeuralNet;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -67,7 +67,7 @@ public class Population {
         return child;
     }
 
-    private Car getBestCar() throws NullPointerException {
+    private Car getBestCar() {
         double bestScore = 0;
         Car bestCar = null;
         for (Car car : cars) {
@@ -97,6 +97,7 @@ public class Population {
         return false;
     }
 
+    // TODO can be used after loading a neural network from JSON
     private void overrideAllWithBest() {
         NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
         cars.parallelStream().forEach(car -> car.setNeuralNet(bestNeuralNet));
