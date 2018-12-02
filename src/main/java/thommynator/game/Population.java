@@ -57,17 +57,7 @@ public class Population {
         this.cars = children;
     }
 
-    private Car generateChild(Car parent) {
-        return new Car(new Point2D.Double(App.INITIAL_X, App.INITIAL_Y), new NeuralNet(parent.getNeuralNet()));
-    }
-
-    private Car mutateChild(Car child) {
-        double mutationRate = 0.05;
-        child.getNeuralNet().mutate(new Random().nextDouble() * mutationRate);
-        return child;
-    }
-
-    private Car getBestCar() {
+    public Car getBestCar() {
         double bestScore = 0;
         Car bestCar = null;
         for (Car car : cars) {
@@ -95,6 +85,16 @@ public class Population {
         }
         log.debug("All cars are dead.");
         return false;
+    }
+
+    private Car generateChild(Car parent) {
+        return new Car(new Point2D.Double(App.INITIAL_X, App.INITIAL_Y), new NeuralNet(parent.getNeuralNet()));
+    }
+
+    private Car mutateChild(Car child) {
+        double mutationRate = 0.05;
+        child.getNeuralNet().mutate(new Random().nextDouble() * mutationRate);
+        return child;
     }
 
     // TODO can be used after loading a neural network from JSON

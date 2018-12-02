@@ -72,6 +72,7 @@ public class Drawer extends JPanel implements Runnable {
     private void cycle() {
         population.update();
         if (!population.isAlive()) {
+            population.getBestCar().getNeuralNet().save();
             population.nextGeneration();
         }
     }

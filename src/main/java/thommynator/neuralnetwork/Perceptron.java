@@ -1,10 +1,13 @@
 package thommynator.neuralnetwork;
 
 import lombok.Getter;
+import org.json.simple.JSONObject;
 import thommynator.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents one single node in the {@link NeuralNet}.
@@ -49,6 +52,16 @@ public class Perceptron {
             double noise = Utils.random(-mutationRate, mutationRate);
             weights.set(i, Utils.constrain(w + noise, -1, 1));
         }
+    }
+
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        Map<Integer, Double> ws = new HashMap<>(weights.size());
+        for (int i = 0; i < weights.size(); i++) {
+            ws.put(i, weights.get(i));
+        }
+        obj.put("weights", new JSONObject(ws));
+        return obj;
     }
 
     // Sigmoid Function from -1 to +1
