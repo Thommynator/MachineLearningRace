@@ -1,7 +1,8 @@
 package thommynator;
 
+import thommynator.Game.Drawer;
 import thommynator.Game.Population;
-import thommynator.Game.PopulationDrawer;
+import thommynator.Game.Racetrack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ public class App extends JFrame {
 
     public final static int MAP_WIDTH = 800;
     public final static int MAP_HEIGHT = 600;
+    public static Racetrack racetrack;
     public final static int INITIAL_X = 30;
     public final static int INITIAL_Y = 30;
     public final static AtomicInteger CAR_ID_FACTORY = new AtomicInteger(0);
@@ -18,6 +20,7 @@ public class App extends JFrame {
 
     public App() {
         initUI();
+        racetrack = new Racetrack();
     }
 
     public static void main(String[] args) {
@@ -30,9 +33,9 @@ public class App extends JFrame {
     }
 
     private void initUI() {
-        add(new PopulationDrawer(new Population(100)));
-        setSize(MAP_WIDTH, MAP_HEIGHT);
-        setBackground(new Color(200, 200, 200));
+        add(new Drawer(new Population(200)));
+        setSize(MAP_WIDTH + 10, MAP_HEIGHT + 30); // some buffer to make everything visible
+        setBackground(Racetrack.BACKGROUND_COLOR);
         setResizable(false);
         setTitle("ML-Race");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
