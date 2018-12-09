@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 @Slf4j
+@Getter
 public class Population {
     private int amountOfCars;
 
-    @Getter
     private ArrayList<Car> cars;
 
     public Population(int amountOfCars) {

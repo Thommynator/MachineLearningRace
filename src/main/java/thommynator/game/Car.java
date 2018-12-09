@@ -48,7 +48,6 @@ public class Car {
         this.speed = Utils.random(0.5, 3.0);
         this.drivenDistance = 0.0;
         this.isAlive = true;
-        this.fitness = 0.0;
         int hiddenNodes = 6;
         this.nSensors = 5;
         this.neuralNet = new NeuralNet(nSensors, hiddenNodes, 2);
@@ -143,8 +142,7 @@ public class Car {
 
     protected double getFitness() {
         // distance to top-left corner
-        this.fitness = Math.pow(position.distance(0, 0), 2);
-        return fitness;
+        return Math.pow(position.distance(0, 0), 2);
     }
 
     /**
@@ -182,7 +180,7 @@ public class Car {
         return this.isInsideCanvas(x, y) && this.isOnTrack(x, y);
     }
 
-    private boolean isOnTrack(double x, double y) {
+    protected boolean isOnTrack(double x, double y) {
         int positionColorInt = App.RACETRACK.getImage().getRGB((int) x, (int) y);
         int trackColorInt = Racetrack.FOREGROUND_COLOR.getRGB();
         return positionColorInt == trackColorInt;
