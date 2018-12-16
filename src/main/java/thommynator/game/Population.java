@@ -57,6 +57,12 @@ public class Population {
         this.cars = children;
     }
 
+    /**
+     * Finds the best car of this population and returns it.
+     * The best car is the one with the highest {@link Car#fitness}.
+     *
+     * @return the {@link Car} with the hightest fitness.
+     */
     public Car getBestCar() {
         double bestScore = 0;
         Car bestCar = null;
@@ -77,6 +83,13 @@ public class Population {
         return bestCar;
     }
 
+    /**
+     * Checks if the populations is alive or dead.
+     * A population is dead, if all if its cars are dead. As long as one single car is alive, the whole populations
+     * is alive.
+     *
+     * @return true if alive, otherwise false.
+     */
     public boolean isAlive() {
         for (Car car : cars) {
             if (car.isAlive()) {
@@ -97,13 +110,37 @@ public class Population {
         return child;
     }
 
-    // TODO can be used after loading a neural network from JSON
-    private void overrideAllWithBest() {
-        NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
-        cars.parallelStream().forEach(car -> car.setNeuralNet(bestNeuralNet));
-    }
-
+    /**
+     * Calls for all cars in the population the update method {@link Car#updateState()}.
+     */
     public void update() {
         cars.parallelStream().forEach(Car::updateState);
     }
+
+    /**
+     * Loads the {@link NeuralNet} of the best car and uses it for the whole population.
+     * Every {@link Car} will have the same {@link NeuralNet} after this.
+     */
+    public void overrideAllWithBest() {
+        NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
+        this.overrideAllNeuralNets(bestNeuralNet);
+    }
+
+    /**
+     * Loads a {@link NeuralNet} from a json file and uses it for the whole population.
+     * Every {@link Car} will have the same {@link NeuralNet} after this.
+     */
+    public void overrideAllWithJson() {
+        this.overrideAllWithJson("neural-net.json");
+    }
+
+    protected void overrideAllWithJson(String fileName) {
+        NeuralNet neuralNet = NeuralNet.load(fileName);
+        this.overrideAllNeuralNets(neuralNet);
+    }
+
+    private void overrideAllNeuralNets(NeuralNet neuralNet) {
+        cars.parallelStream().forEach(car -> car.setNeuralNet(new NeuralNet(neuralNet)));
+    }
+
 }

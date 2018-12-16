@@ -2,15 +2,23 @@ package thommynator.neuralnetwork;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
+@Getter
+@EqualsAndHashCode
 public class NeuralNet {
 
     private int amountOfInputPerceptrons;
@@ -54,6 +62,25 @@ public class NeuralNet {
         for (Perceptron p : other.outputPerceptrons) {
             this.outputPerceptrons.add(new Perceptron(p.getWeights()));
         }
+    }
+
+    /**
+     * Load a {@link NeuralNet} from a JSON file and return the object as Java object.
+     *
+     * @param fileName name of the json file.
+     * @return a new instance of {@link NeuralNet}.
+     */
+    public static NeuralNet load(String fileName) {
+        String path = Objects.requireNonNull(NeuralNet.class.getClassLoader().getResource(fileName)).getPath();
+        try (JsonReader jsonReader = new JsonReader(new FileReader(path))) {
+            Gson gson = new GsonBuilder().create();
+            return gson.fromJson(jsonReader, NeuralNet.class);
+        } catch (FileNotFoundException e) {
+            log.error("File not found. Can't load neural net from: {}", path);
+        } catch (IOException e) {
+            log.error("Error occurred when loading a neural network from a file.");
+        }
+        return null;
     }
 
     public List<Double> returnOutputs(List<Double> inputs) {
