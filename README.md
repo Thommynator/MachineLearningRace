@@ -4,8 +4,8 @@
 
 | master | develop |
 |--------|---------|
-| ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=master) | ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=develop) |
-| [![Coverage Status](https://coveralls.io/repos/github/Thommynator/MachineLearningRace/badge.svg?branch=master)](https://coveralls.io/github/Thommynator/MachineLearningRace?branch=master) | [![Coverage Status](https://coveralls.io/repos/github/Thommynator/MachineLearningRace/badge.svg?branch=develop)](https://coveralls.io/github/Thommynator/MachineLearningRace?branch=develop) |
+| ![Build Status Master](https://travis-ci.com/Thommynator/MachineLearningRace.png?branch=master) | ![Build Status Develop](https://travis-ci.com/Thommynator/MachineLearningRace.png?branch=develop) |
+| [![Coverage Status Master](https://coveralls.io/repos/github/Thommynator/MachineLearningRace/badge.png?branch=master)](https://coveralls.io/github/Thommynator/MachineLearningRace?branch=master) | [![Coverage Status Develop](https://coveralls.io/repos/github/Thommynator/MachineLearningRace/badge.png?branch=develop)](https://coveralls.io/github/Thommynator/MachineLearningRace?branch=develop) |
 
 ### General Idea
 This project uses a genetic machine learning algorithm to control some
