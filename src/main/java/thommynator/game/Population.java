@@ -7,6 +7,7 @@ import thommynator.neuralnetwork.NeuralNet;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -57,6 +58,12 @@ public class Population {
         this.cars = children;
     }
 
+    /**
+     * Finds the best car of this population and returns it.
+     * The best car is the one with the highest {@link Car#fitness}.
+     *
+     * @return the {@link Car} with the hightest fitness.
+     */
     public Car getBestCar() {
         double bestScore = 0;
         Car bestCar = null;
@@ -77,6 +84,13 @@ public class Population {
         return bestCar;
     }
 
+    /**
+     * Checks if the populations is alive or dead.
+     * A population is dead, if all if its cars are dead. As long as one single car is alive, the whole populations
+     * is alive.
+     *
+     * @return true if alive, otherwise false.
+     */
     public boolean isAlive() {
         for (Car car : cars) {
             if (car.isAlive()) {
@@ -97,13 +111,35 @@ public class Population {
         return child;
     }
 
-    // TODO can be used after loading a neural network from JSON
-    private void overrideAllWithBest() {
+    /**
+     * Calls for all cars in the population the update method {@link Car#updateState()}.
+     */
+    public void update() {
+        cars.parallelStream().forEach(Car::updateState);
+    }
+
+    /**
+     * Loads the {@link NeuralNet} of the best car and uses it for the whole population.
+     * Every {@link Car} will have the same {@link NeuralNet} after this.
+     */
+    public void overrideAllWithBest() {
         NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
         cars.parallelStream().forEach(car -> car.setNeuralNet(bestNeuralNet));
     }
 
-    public void update() {
-        cars.parallelStream().forEach(Car::updateState);
+    /**
+     * Loads a {@link NeuralNet} from a json file and uses it for the whole population.
+     * Every {@link Car} will have the same {@link NeuralNet} after this.
+     */
+    public void overrideAllWithJson() {
+        URL url = this.getClass().getClassLoader().getResource("neural-net.json");
+        if (url != null) {
+            NeuralNet neuralNet = NeuralNet.load(url.getPath());
+            cars.parallelStream().forEach(car -> car.setNeuralNet(neuralNet));
+        } else {
+            log.info("Couldn't import neural net from json file for all cars. " +
+                    "\nContinuing without any changes.");
+        }
     }
+
 }
