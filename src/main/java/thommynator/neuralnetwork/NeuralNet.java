@@ -3,6 +3,7 @@ package thommynator.neuralnetwork;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 @Slf4j
 @Getter
+@EqualsAndHashCode
 public class NeuralNet {
 
     private int amountOfInputPerceptrons;

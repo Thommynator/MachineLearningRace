@@ -7,7 +7,6 @@ import thommynator.neuralnetwork.NeuralNet;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -124,7 +123,7 @@ public class Population {
      */
     public void overrideAllWithBest() {
         NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
-        cars.parallelStream().forEach(car -> car.setNeuralNet(bestNeuralNet));
+        this.overrideAllNeuralNets(bestNeuralNet);
     }
 
     /**
@@ -132,14 +131,16 @@ public class Population {
      * Every {@link Car} will have the same {@link NeuralNet} after this.
      */
     public void overrideAllWithJson() {
-        URL url = this.getClass().getClassLoader().getResource("neural-net.json");
-        if (url != null) {
-            NeuralNet neuralNet = NeuralNet.load(url.getPath());
-            cars.parallelStream().forEach(car -> car.setNeuralNet(neuralNet));
-        } else {
-            log.info("Couldn't import neural net from json file for all cars. " +
-                    "\nContinuing without any changes.");
-        }
+        this.overrideAllWithJson("neural-net.json");
+    }
+
+    protected void overrideAllWithJson(String fileName) {
+        NeuralNet neuralNet = NeuralNet.load(fileName);
+        this.overrideAllNeuralNets(neuralNet);
+    }
+
+    private void overrideAllNeuralNets(NeuralNet neuralNet) {
+        cars.parallelStream().forEach(car -> car.setNeuralNet(new NeuralNet(neuralNet)));
     }
 
 }
