@@ -35,6 +35,7 @@ public class Drawer extends JPanel implements Runnable {
             long now = System.currentTimeMillis();
             if (now - epochStartTime > MAX_EPOCH_TIME) {
                 epochStartTime = now;
+                population.getBestCar().getNeuralNet().save();
                 population.nextGeneration();
             }
 
