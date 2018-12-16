@@ -1,8 +1,8 @@
 package thommynator.neuralnetwork;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -84,37 +84,17 @@ public class NeuralNet {
     }
 
     /**
-     * Converts the {@link NeuralNet} into a {@link JSONObject}.
-     *
-     * @return a {@link JSONObject}.
-     */
-    private JSONObject toJSON() {
-        JSONObject obj = new JSONObject();
-        obj.put("amountOfInputPerceptrons", amountOfInputPerceptrons);
-        obj.put("amountOfHiddenPerceptrons", amountOfHiddenPerceptrons);
-        obj.put("amountOfOutputPerceptrons", amountOfOutputPerceptrons);
-
-        JSONArray hidden = new JSONArray();
-        hiddenPerceptrons.forEach(p -> hidden.add(p.toJSON()));
-        obj.put("hiddenPerceptrons", hidden);
-
-        JSONArray output = new JSONArray();
-        outputPerceptrons.forEach(p -> output.add(p.toJSON()));
-        obj.put("outputPerceptrons", output);
-        return obj;
-    }
-
-    /**
      * Saves this {@link NeuralNet} as JSON string into file.
      */
     public void save() {
         URL url = this.getClass().getClassLoader().getResource("neural-net.json");
         if (url != null) {
             try (FileWriter file = new FileWriter(url.getPath())) {
-                JSONObject jsonObject = this.toJSON();
-                file.write(jsonObject.toJSONString());
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(this);
+                file.write(json);
                 log.info("Successfully saved neural net JSON object to file {}.", url.getPath());
-                log.debug("object: \n {}", jsonObject);
+                log.debug("object: \n {}", json);
             } catch (IOException e) {
                 log.error("Failed to save neural net JSON object.", e);
             }
