@@ -29,14 +29,20 @@ public class Drawer extends JPanel implements Runnable {
 
         while (true) {
 
-            cycle();
+            population.update();
             repaint();
 
             long now = System.currentTimeMillis();
             if (now - epochStartTime > MAX_EPOCH_TIME) {
-                epochStartTime = now;
                 population.getBestCar().getNeuralNet().save();
                 population.nextGeneration();
+                epochStartTime = now;
+            }
+
+            if (!population.isAlive()) {
+                population.getBestCar().getNeuralNet().save();
+                population.nextGeneration();
+                epochStartTime = now;
             }
 
             timeDiff = now - beforeTime;
@@ -68,14 +74,6 @@ public class Drawer extends JPanel implements Runnable {
         super.addNotify();
         Thread animator = new Thread(this);
         animator.start();
-    }
-
-    private void cycle() {
-        population.update();
-        if (!population.isAlive()) {
-            population.getBestCar().getNeuralNet().save();
-            population.nextGeneration();
-        }
     }
 
     private void drawCar(Graphics g, Car car, boolean showId) {
