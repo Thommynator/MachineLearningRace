@@ -1,5 +1,6 @@
-package thommynator.NeuralNetwork;
+package thommynator.neuralnetwork;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import thommynator.utils.Utils;
 
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Represents one single node in the {@link NeuralNet}.
  */
+@EqualsAndHashCode
 public class Perceptron {
 
     @Getter

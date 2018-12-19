@@ -4,7 +4,8 @@
 
 | master | develop |
 |--------|---------|
-| ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=master) | ![](https://travis-ci.com/Thommynator/MachineLearningRace.svg?branch=develop) |
+| ![Build Status Master](https://travis-ci.com/Thommynator/MachineLearningRace.png?branch=master) | ![Build Status Develop](https://travis-ci.com/Thommynator/MachineLearningRace.png?branch=develop) |
+| [![Coverage Status Master](https://coveralls.io/repos/github/Thommynator/MachineLearningRace/badge.png?branch=master)](https://coveralls.io/github/Thommynator/MachineLearningRace?branch=master) | [![Coverage Status Develop](https://coveralls.io/repos/github/Thommynator/MachineLearningRace/badge.png?branch=develop)](https://coveralls.io/github/Thommynator/MachineLearningRace?branch=develop) |
 
 ### General Idea
 This project uses a genetic machine learning algorithm to control some
@@ -29,16 +30,17 @@ make sure to download it and set it up on your machine.
 ### New Ideas / Remaining Tasks
 
 * ~~simple moving cars~~
-* race-track generator
+* ~~race-track generator~~
 * interactive features like:
     * show only best car, hide others
     * change (increase/decrease/toggle) mutation rate
     * add trace for each car, which visualizes the driven path
-    * use neural network of best car for all other cars
     * save neural network of current best car
     * load neural network
-* fitness function
-* debug neural network
+    * use neural network of best car for all other cars
+    * mouse events like zooming & panning 
+    * drawing new racetracks via mouse movement
+* better fitness function
 * fancy looking cars (image)
 * probably a lot of other stuff :D
 

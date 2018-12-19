@@ -1,4 +1,4 @@
-package thommynator.Game;
+package thommynator.game;
 
 import thommynator.App;
 
@@ -8,72 +8,25 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
-public class Drawer extends JPanel implements Runnable {
+public class GameCanvas extends JPanel implements Runnable {
 
-    private final int DELAY = 20;               // time in ms between each frame
-    private final long MAX_EPOCH_TIME = 15000;  // hard reset after this amount of milliseconds
-    private Population population;
+    private static final int DELAY = 20;               // time in ms between each frame
+    private static final long MAX_EPOCH_TIME = 15000;  // hard reset after this amount of milliseconds
+    private transient Population population;
     private boolean showCarIds;
 
-    public Drawer(Population population) {
+    public GameCanvas(Population population) {
+        setSize(App.MAP_WIDTH, App.MAP_HEIGHT);
+        setOpaque(false);
+        setVisible(true);
         this.population = population;
         this.showCarIds = false;
     }
 
     @Override
-    public void run() {
-        long epochStartTime = System.currentTimeMillis();
-        long beforeTime = System.currentTimeMillis();
-        long timeDiff;
-        long sleep;
-
-        while (true) {
-
-            cycle();
-            repaint();
-
-            long now = System.currentTimeMillis();
-            if (now - epochStartTime > MAX_EPOCH_TIME) {
-                epochStartTime = now;
-                population.nextGeneration();
-            }
-
-            timeDiff = now - beforeTime;
-            sleep = DELAY - timeDiff;
-
-            if (sleep < 0) {
-                sleep = 2;
-            }
-
-            try {
-                Thread.sleep(sleep);
-            } catch (InterruptedException e) {
-                String msg = String.format("Thread interrupted: %s", e.getMessage());
-                JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            beforeTime = System.currentTimeMillis();
-        }
-    }
-
-    @Override
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        drawRacetrack(graphics);
-        population.getCars().forEach(car -> drawCar(graphics, car, showCarIds));
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        Thread animator = new Thread(this);
-        animator.start();
-    }
-
-    private void cycle() {
-        population.update();
-        if (!population.isAlive()) {
-            population.nextGeneration();
-        }
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        population.getCars().forEach(car -> drawCar(g, car, showCarIds));
     }
 
     private void drawCar(Graphics g, Car car, boolean showId) {
@@ -114,7 +67,52 @@ public class Drawer extends JPanel implements Runnable {
         }
     }
 
-    private void drawRacetrack(Graphics g) {
-        g.drawImage(App.racetrack.image, 0, 0, null);
+    @Override
+    public void run() {
+        long epochStartTime = System.currentTimeMillis();
+        long beforeTime = System.currentTimeMillis();
+        long timeDiff;
+        long sleep;
+
+        while (true) {
+
+            population.update();
+            repaint();
+
+            long now = System.currentTimeMillis();
+            if (now - epochStartTime > MAX_EPOCH_TIME) {
+                population.getBestCar().getNeuralNet().save();
+                population.nextGeneration();
+                epochStartTime = now;
+            }
+
+            if (!population.isAlive()) {
+                population.getBestCar().getNeuralNet().save();
+                population.nextGeneration();
+                epochStartTime = now;
+            }
+
+            timeDiff = now - beforeTime;
+            sleep = DELAY - timeDiff;
+
+            if (sleep < 0) {
+                sleep = 2;
+            }
+
+            try {
+                Thread.sleep(sleep);
+            } catch (InterruptedException e) {
+                String msg = String.format("Thread interrupted: %s", e.getMessage());
+                JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            beforeTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        Thread animator = new Thread(this);
+        animator.start();
     }
 }

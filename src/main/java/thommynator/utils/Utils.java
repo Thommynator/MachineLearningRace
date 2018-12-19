@@ -4,6 +4,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
 
+    private Utils() {
+        // private constructor to hide the implicit public one
+    }
+
     public static double map(double x, double lowerBefore, double upperBefore, double lowerAfter, double upperAfter) {
         return (x - lowerBefore) * (upperAfter - lowerAfter) / (upperBefore - lowerBefore) + lowerAfter;
     }

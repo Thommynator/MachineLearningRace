@@ -1,7 +1,24 @@
-package thommynator.NeuralNetwork;
+package thommynator.neuralnetwork;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+@Slf4j
+@Getter
+@EqualsAndHashCode
 public class NeuralNet {
 
     private int amountOfInputPerceptrons;
@@ -47,7 +64,26 @@ public class NeuralNet {
         }
     }
 
-    public ArrayList<Double> returnOutputs(ArrayList<Double> inputs) {
+    /**
+     * Load a {@link NeuralNet} from a JSON file and return the object as Java object.
+     *
+     * @param fileName name of the json file.
+     * @return a new instance of {@link NeuralNet}.
+     */
+    public static NeuralNet load(String fileName) {
+        String path = Objects.requireNonNull(NeuralNet.class.getClassLoader().getResource(fileName)).getPath();
+        try (JsonReader jsonReader = new JsonReader(new FileReader(path))) {
+            Gson gson = new GsonBuilder().create();
+            return gson.fromJson(jsonReader, NeuralNet.class);
+        } catch (FileNotFoundException e) {
+            log.error("File not found. Can't load neural net from: {}", path);
+        } catch (IOException e) {
+            log.error("Error occurred when loading a neural network from a file.");
+        }
+        return null;
+    }
+
+    public List<Double> returnOutputs(List<Double> inputs) {
         ArrayList<Double> hiddenOutputs = new ArrayList<>(amountOfHiddenPerceptrons);
         for (int i = 0; i < amountOfHiddenPerceptrons; i++) {
             hiddenOutputs.add(hiddenPerceptrons.get(i).getOutput(inputs));
@@ -71,6 +107,26 @@ public class NeuralNet {
             Perceptron op = outputPerceptrons.get(i);
             op.mutateWeights(mutationRate);
             outputPerceptrons.set(i, op);
+        }
+    }
+
+    /**
+     * Saves this {@link NeuralNet} as JSON string into file.
+     */
+    public void save() {
+        URL url = this.getClass().getClassLoader().getResource("neural-net.json");
+        if (url != null) {
+            try (FileWriter file = new FileWriter(url.getPath())) {
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(this);
+                file.write(json);
+                log.info("Successfully saved neural net JSON object to file {}.", url.getPath());
+                log.debug("object: \n {}", json);
+            } catch (IOException e) {
+                log.error("Failed to save neural net JSON object.", e);
+            }
+        } else {
+            log.error("Failed to save neural net JSON object. URL is null.");
         }
     }
 }
