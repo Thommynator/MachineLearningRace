@@ -3,6 +3,7 @@ package thommynator.game;
 import lombok.Data;
 import thommynator.App;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Data
-public class Racetrack extends Canvas implements MouseMotionListener {
+public class Racetrack extends JPanel implements MouseMotionListener {
 
     public static final Color FOREGROUND_COLOR = new Color(100, 100, 100);
     public static final Color BACKGROUND_COLOR = new Color(200, 200, 200);
@@ -23,9 +24,10 @@ public class Racetrack extends Canvas implements MouseMotionListener {
     BufferedImage image;
 
     public Racetrack() {
-        super.addMouseMotionListener(this);
-        super.setBackground(BACKGROUND_COLOR);
-        super.setSize(App.MAP_WIDTH, App.MAP_HEIGHT);
+        addMouseMotionListener(this);
+        setBackground(BACKGROUND_COLOR);
+        setSize(App.MAP_WIDTH, App.MAP_HEIGHT);
+        setOpaque(true);
 
         anchorPoints = Arrays.asList(
                 new Point2D.Double(0.0, 0.0),
@@ -35,7 +37,7 @@ public class Racetrack extends Canvas implements MouseMotionListener {
         image = createTrack();
     }
 
-    public BufferedImage createTrack() {
+    private BufferedImage createTrack() {
         BufferedImage img = new BufferedImage(App.MAP_WIDTH, App.MAP_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D graphics = img.createGraphics();
         graphics.setColor(BACKGROUND_COLOR);
@@ -49,13 +51,14 @@ public class Racetrack extends Canvas implements MouseMotionListener {
     }
 
     @Override
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.drawImage(image, 0, 0, null);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Graphics graphics = getGraphics();
+        Graphics graphics = super.getGraphics();
         graphics.setColor(FOREGROUND_COLOR);
         int w = ROAD_WIDTH;
         int x = e.getX() - (int) (w / 2.0);
