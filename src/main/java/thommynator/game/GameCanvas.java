@@ -16,9 +16,7 @@ public class GameCanvas extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-//        g.clearRect(0, 0, App.MAP_WIDTH, App.MAP_HEIGHT);
-        g.setColor(new Color(0, 0, 255, 100));
-        setBackground(new Color(255, 0, 0, 100));
+        g.setColor(new Color(0, 0, 255, 200));
         g.fillOval(50, 50, 200, 100);
     }
 }
