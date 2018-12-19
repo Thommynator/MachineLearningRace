@@ -57,11 +57,5 @@ public class App extends JFrame {
 
         // close window
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-//        add(new Drawer(new Population(200)));
-//        setSize(MAP_WIDTH + 10, MAP_HEIGHT + 30); // some buffer to make everything visible
-//        setBackground(Racetrack.BACKGROUND_COLOR);
-//        setResizable(false);
-//        setLocationRelativeTo(null);
     }
 }
