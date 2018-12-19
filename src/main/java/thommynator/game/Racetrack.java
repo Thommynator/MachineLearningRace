@@ -19,7 +19,7 @@ public class Racetrack extends JPanel implements MouseMotionListener {
     public static final Color FOREGROUND_COLOR = new Color(100, 100, 100);
     public static final Color BACKGROUND_COLOR = new Color(200, 200, 200);
 
-    public static final int ROAD_WIDTH = 50;
+    public static final int ROAD_WIDTH = 100;
     List<Point2D> anchorPoints;
     BufferedImage image;
 

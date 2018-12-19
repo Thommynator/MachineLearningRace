@@ -1,6 +1,7 @@
 package thommynator;
 
 import thommynator.game.GameCanvas;
+import thommynator.game.Population;
 import thommynator.game.Racetrack;
 
 import javax.swing.*;
@@ -45,7 +46,7 @@ public class App extends JFrame {
         // add the content panel
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(null);
-        contentPanel.add(new GameCanvas());
+        contentPanel.add(new GameCanvas(new Population(200)));
         contentPanel.add(new Racetrack());
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
