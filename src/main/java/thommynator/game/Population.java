@@ -1,6 +1,7 @@
 package thommynator.game;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import thommynator.App;
 import thommynator.neuralnetwork.NeuralNet;
@@ -14,12 +15,15 @@ import java.util.Random;
 @Getter
 public class Population {
     private int amountOfCars;
-
     private ArrayList<Car> cars;
+
+    @Setter
+    private boolean mutationEnabled;
 
     public Population(int amountOfCars) {
         log.debug("Create a new population with {} cars.", amountOfCars);
         this.amountOfCars = amountOfCars;
+        this.mutationEnabled = true;
 
         cars = new ArrayList<>();
         for (int i = 0; i < amountOfCars; i++) {
@@ -52,7 +56,11 @@ public class Population {
                 beta -= cars.get(index).getFitness();
                 index = (index + 1) % amountOfCars;
             }
-            children.add(mutateChild(generateChild(cars.get(index))));
+            if (mutationEnabled) {
+                children.add(mutateChild(generateChild(cars.get(index))));
+            } else {
+                children.add(generateChild(cars.get(index)));
+            }
         }
         this.cars = children;
     }

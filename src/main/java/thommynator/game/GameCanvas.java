@@ -1,5 +1,7 @@
 package thommynator.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import thommynator.App;
 
 import javax.swing.*;
@@ -12,6 +14,9 @@ public class GameCanvas extends JPanel implements Runnable {
 
     private static final int DELAY = 20;               // time in ms between each frame
     private static final long MAX_EPOCH_TIME = 15000;  // hard reset after this amount of milliseconds
+    @Setter
+    @Getter
+    private boolean showBestCarOnly;
     private transient Population population;
     private boolean showCarIds;
 
@@ -21,12 +26,17 @@ public class GameCanvas extends JPanel implements Runnable {
         setVisible(true);
         this.population = population;
         this.showCarIds = false;
+        this.showBestCarOnly = false;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        population.getCars().forEach(car -> drawCar(g, car, showCarIds));
+        if (!showBestCarOnly) {
+            population.getCars().forEach(car -> drawCar(g, car, showCarIds));
+        } else {
+            drawCar(g, population.getBestCar(), showCarIds);
+        }
     }
 
     private void drawCar(Graphics g, Car car, boolean showId) {
@@ -81,13 +91,11 @@ public class GameCanvas extends JPanel implements Runnable {
 
             long now = System.currentTimeMillis();
             if (now - epochStartTime > MAX_EPOCH_TIME) {
-                population.getBestCar().getNeuralNet().save();
                 population.nextGeneration();
                 epochStartTime = now;
             }
 
             if (!population.isAlive()) {
-                population.getBestCar().getNeuralNet().save();
                 population.nextGeneration();
                 epochStartTime = now;
             }

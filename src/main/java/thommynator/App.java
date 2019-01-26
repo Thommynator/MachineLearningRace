@@ -15,7 +15,6 @@ import static thommynator.game.MenuContent.*;
 @Slf4j
 public class App extends JFrame implements ActionListener {
 
-
     public static final int MAP_WIDTH = 800;
     public static final int MAP_HEIGHT = 600;
     public static final int INITIAL_X = 30;
@@ -26,6 +25,8 @@ public class App extends JFrame implements ActionListener {
     @Getter
     private Population population;
     private int amountOfCars = 500;
+    @Getter
+    private GameCanvas gameCanvas;
 
     public App() {
         population = new Population(amountOfCars);
@@ -47,7 +48,8 @@ public class App extends JFrame implements ActionListener {
         // add the content panel
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(null);
-        contentPanel.add(new GameCanvas(population));
+        this.gameCanvas = new GameCanvas(population);
+        contentPanel.add(this.gameCanvas);
         contentPanel.add(new RacetrackCanvas(racetrack));
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,20 +73,22 @@ public class App extends JFrame implements ActionListener {
 
         menuItem = new JMenuItem(RACE_STOP.getMsg());
         menuItem.addActionListener(this);
-        raceMenu.add(menuItem);
-//        menuBar.add(raceMenu);
+//        raceMenu.add(menuItem);
 
         menuItem = new JMenuItem(RACE_RESTART.getMsg());
         menuItem.addActionListener(this);
         raceMenu.add(menuItem);
-        menuBar.add(raceMenu);
 
-        menuItem = new JMenuItem(RACE_NEWTRACK.getMsg());
+        menuItem = new JMenuItem(RACE_SHOW_BEST_CAR.getMsg());
         menuItem.addActionListener(this);
         raceMenu.add(menuItem);
         menuBar.add(raceMenu);
 
         JMenu neuralNetMenu = new JMenu("Neural Net");
+        menuItem = new JMenuItem(NEURALNET_SWITCH_MUTATION.getMsg());
+        menuItem.addActionListener(this);
+        neuralNetMenu.add(menuItem);
+
         menuItem = new JMenuItem(NEURALNET_SAVE.getMsg());
         menuItem.addActionListener(this);
         neuralNetMenu.add(menuItem);
@@ -122,9 +126,17 @@ public class App extends JFrame implements ActionListener {
             log.info("Restarted");
         }
 
-        if (actionCommand.equals(RACE_NEWTRACK.getMsg())) {
-            // TODO add functionality to load initial/default racetrack
-            log.info("Restarted");
+        if (actionCommand.equals(RACE_SHOW_BEST_CAR.getMsg())) {
+            gameCanvas.setShowBestCarOnly(!gameCanvas.isShowBestCarOnly());
+            String status = gameCanvas.isShowBestCarOnly()
+                    ? "only best car" : "all cars";
+            log.info("Show {}.", status);
+        }
+
+        if (actionCommand.equals(NEURALNET_SWITCH_MUTATION.getMsg())) {
+            population.setMutationEnabled(!population.isMutationEnabled());
+            String status = population.isMutationEnabled() ? "enabled" : "disabled";
+            log.info("Mutation is now {}.", status);
         }
 
         if (actionCommand.equals(NEURALNET_SAVE.getMsg())) {

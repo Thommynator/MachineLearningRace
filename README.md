@@ -32,14 +32,14 @@ make sure to download it and set it up on your machine.
 * ~~simple moving cars~~
 * ~~race-track generator~~
 * interactive features like:
-    * show only best car, hide others
-    * change (increase/decrease/toggle) mutation rate
+    * ~~show only best car, hide others~~
+    * change (increase/decrease/~~toggle~~) mutation rate
     * add trace for each car, which visualizes the driven path
     * ~~save neural network of current best car~~
     * ~~load neural network~~
     * ~~use neural network of best car for all other cars~~
     * mouse events like zooming & panning 
-    * drawing new racetracks via mouse movement
+    * ~~drawing new racetracks via mouse movement~~
 * better fitness function
 * fancy looking cars (image)
 * probably a lot of other stuff :D
