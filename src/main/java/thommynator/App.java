@@ -25,7 +25,7 @@ public class App extends JFrame implements ActionListener {
     private static Racetrack racetrack = new SimpleRacetrack();
     @Getter
     private Population population;
-    private int amountOfCars = 50;
+    private int amountOfCars = 500;
 
     public App() {
         population = new Population(amountOfCars);
