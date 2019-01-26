@@ -19,7 +19,7 @@ Basically, the neural network should return two outputs, one for
 acceleration/deceleration and the other one for turning the car...
 hopefully. :P
 
-![](src/main/resources/demo.png)
+![](src/main/resources/demo.gif)
 
 ### How to run the project
 This project uses [Maven](http://maven.apache.org/) as a build-tool, so
