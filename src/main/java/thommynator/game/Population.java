@@ -29,7 +29,7 @@ public class Population {
 
     /**
      * Generate a new population of cars from the current one.
-     * Cars with a high {@link Car#fitness} have a better chance to survive.
+     * Cars with a high fitness have a better chance to survive.
      */
     public void nextGeneration() {
         log.debug("Creating new generation...");
@@ -59,9 +59,9 @@ public class Population {
 
     /**
      * Finds the best car of this population and returns it.
-     * The best car is the one with the highest {@link Car#fitness}.
+     * The best car is the one with the highest fitness.
      *
-     * @return the {@link Car} with the hightest fitness.
+     * @return the {@link Car} with the highest fitness.
      */
     public Car getBestCar() {
         double bestScore = 0;
@@ -134,12 +134,12 @@ public class Population {
         this.overrideAllWithJson("neural-net.json");
     }
 
-    protected void overrideAllWithJson(String fileName) {
+    public void overrideAllWithJson(String fileName) {
         NeuralNet neuralNet = NeuralNet.load(fileName);
         this.overrideAllNeuralNets(neuralNet);
     }
 
-    private void overrideAllNeuralNets(NeuralNet neuralNet) {
+    public void overrideAllNeuralNets(NeuralNet neuralNet) {
         cars.parallelStream().forEach(car -> car.setNeuralNet(new NeuralNet(neuralNet)));
     }
 

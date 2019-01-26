@@ -20,7 +20,7 @@ public class PopulationTest {
     @Test
     public void getBestCarTest() {
         Population population = new Population(0);
-        // give  car 3 the best fitness
+        // give car 3 the best fitness
         population.getCars().add(new Car(new Point2D.Double(10, 10)));
         population.getCars().add(new Car(new Point2D.Double(20, 20)));
         population.getCars().add(new Car(new Point2D.Double(30, 30))); // << this should be the best car
@@ -46,7 +46,7 @@ public class PopulationTest {
     @Test
     public void whenOverridingAllNeuralNetworksWithBestThenAllNetsMustBeEqual() {
         Population population = new Population(0);
-        // give  car 3 the best fitness
+        // give car 3 the best fitness
         population.getCars().add(new Car(new Point2D.Double(10, 10)));
         population.getCars().add(new Car(new Point2D.Double(20, 20)));
         population.getCars().add(new Car(new Point2D.Double(30, 30))); // << this should be the best car

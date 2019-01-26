@@ -142,7 +142,8 @@ public class Car {
 
     protected double getFitness() {
         // distance to top-left corner
-        return Math.pow(position.distance(0, 0), 2);
+        fitness = Math.pow(position.distance(0, 0), 2);
+        return fitness;
     }
 
     /**
@@ -181,8 +182,8 @@ public class Car {
     }
 
     protected boolean isOnTrack(double x, double y) {
-        int positionColorInt = App.RACETRACK.getImage().getRGB((int) x, (int) y);
-        int trackColorInt = Racetrack.FOREGROUND_COLOR.getRGB();
+        int positionColorInt = App.getRacetrack().getRacetrack().getRGB((int) x, (int) y);
+        int trackColorInt = Racetrack.ROAD_COLOR.getRGB();
         return positionColorInt == trackColorInt;
     }
 
