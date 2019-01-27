@@ -1,6 +1,7 @@
 package thommynator.game;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import thommynator.App;
 import thommynator.neuralnetwork.NeuralNet;
@@ -11,17 +12,14 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.abs;
-import static java.lang.Math.cos;
-import static java.lang.Math.floor;
-import static java.lang.Math.sin;
+import static java.lang.Math.*;
 
 @Slf4j
 @Data
 public class Car {
 
     // state
+    @EqualsAndHashCode.Exclude
     private int id;
     private Point2D position;
     private double heading;

@@ -106,9 +106,9 @@ public class App extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
 
-        String actionCommand = e.getActionCommand();
+        String actionCommand = actionEvent.getActionCommand();
         if (actionCommand.equals(RACE_START.getMsg())) {
             // TODO add functionality for continuing after stopping
             log.info("Started");
@@ -140,8 +140,12 @@ public class App extends JFrame implements ActionListener {
         }
 
         if (actionCommand.equals(NEURALNET_SAVE.getMsg())) {
-            population.getBestCar().getNeuralNet().save();
-            log.info("Saved best Neural Net.");
+            try {
+                population.getBestCar().getNeuralNet().save();
+                log.info("Saved best Neural Net.");
+            } catch (IllegalAccessException e) {
+                log.error("Can't save best neural net. {}", e.getMessage(), e);
+            }
         }
 
         if (actionCommand.equals(NEURALNET_LOAD.getMsg())) {

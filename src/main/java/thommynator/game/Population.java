@@ -40,27 +40,33 @@ public class Population {
         ArrayList<Car> children = new ArrayList<>();
 
         // make sure, that the best car is for sure in the new population
-        Car bestCar = this.getBestCar();
+        Car bestCar = null;
+        try {
+            bestCar = this.getBestCar();
+            Car child = this.generateChild(bestCar);
+            child.setColor(new Color(0, 255, 0));
+            children.add(child);
 
-        Car child = this.generateChild(bestCar);
-        child.setColor(new Color(0, 255, 0));
-        children.add(child);
-
-        // Resampling Wheel
-        double maxScore = bestCar.getFitness();
-        double beta = 0.0;
-        int index = new Random().nextInt(amountOfCars);
-        for (int i = 1; i < amountOfCars; i++) {
-            beta += new Random().nextDouble() * 2 * maxScore;
-            while (beta > cars.get(index).getFitness()) {
-                beta -= cars.get(index).getFitness();
-                index = (index + 1) % amountOfCars;
+            // Resampling Wheel
+            double maxScore = bestCar.getFitness();
+            double beta = 0.0;
+            int index = new Random().nextInt(amountOfCars);
+            for (int i = 1; i < amountOfCars; i++) {
+                beta += new Random().nextDouble() * 2 * maxScore;
+                while (beta > cars.get(index).getFitness()) {
+                    beta -= cars.get(index).getFitness();
+                    index = (index + 1) % amountOfCars;
+                }
+                if (mutationEnabled) {
+                    children.add(mutateChild(generateChild(cars.get(index))));
+                } else {
+                    children.add(generateChild(cars.get(index)));
+                }
             }
-            if (mutationEnabled) {
-                children.add(mutateChild(generateChild(cars.get(index))));
-            } else {
-                children.add(generateChild(cars.get(index)));
-            }
+        } catch (IllegalAccessException e) {
+            // fallback solution if best car can't be found, just add every car to new generation
+            log.error(e.getMessage());
+            cars.forEach(car -> children.add(generateChild(car)));
         }
         this.cars = children;
     }
@@ -71,7 +77,7 @@ public class Population {
      *
      * @return the {@link Car} with the highest fitness.
      */
-    public Car getBestCar() {
+    public Car getBestCar() throws IllegalAccessException {
         double bestScore = 0;
         Car bestCar = null;
         for (Car car : cars) {
@@ -84,7 +90,7 @@ public class Population {
 
         if (bestCar == null) {
             log.error("Not possible to find the best car. Best car is now null!");
-            throw new NullPointerException("Not possible to find the best car.");
+            throw new IllegalAccessException("Not possible to find the best car.");
         }
 
         log.debug("The best car #{} has a fitness of {}.", bestCar.getId(), bestCar.getFitness(), bestCar);
@@ -112,7 +118,7 @@ public class Population {
         return new Car(new Point2D.Double(App.INITIAL_X, App.INITIAL_Y), new NeuralNet(parent.getNeuralNet()));
     }
 
-    private Car mutateChild(Car child) {
+    protected Car mutateChild(Car child) {
         double mutationRate = 0.05;
         child.getNeuralNet().mutate(new Random().nextDouble() * mutationRate);
         return child;
@@ -130,8 +136,13 @@ public class Population {
      * Every {@link Car} will have the same {@link NeuralNet} after this.
      */
     public void overrideAllWithBest() {
-        NeuralNet bestNeuralNet = this.getBestCar().getNeuralNet();
-        this.overrideAllNeuralNets(bestNeuralNet);
+        NeuralNet bestNeuralNet = null;
+        try {
+            bestNeuralNet = this.getBestCar().getNeuralNet();
+            this.overrideAllNeuralNets(bestNeuralNet);
+        } catch (IllegalAccessException e) {
+            log.error("Can't load and override all cars with the best neural net. {}", e.getMessage(), e);
+        }
     }
 
     /**

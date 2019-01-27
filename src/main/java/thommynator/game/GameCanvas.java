@@ -2,6 +2,7 @@ package thommynator.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import thommynator.App;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
+@Slf4j
 public class GameCanvas extends JPanel implements Runnable {
 
     private static final int DELAY = 20;               // time in ms between each frame
@@ -35,7 +37,12 @@ public class GameCanvas extends JPanel implements Runnable {
         if (!showBestCarOnly) {
             population.getCars().forEach(car -> drawCar(g, car, showCarIds));
         } else {
-            drawCar(g, population.getBestCar(), showCarIds);
+            try {
+                Car bestCar = population.getBestCar();
+                drawCar(g, bestCar, showCarIds);
+            } catch (IllegalAccessException e) {
+                log.info("Can't draw the best car on canvas. {}", e.getMessage(), e);
+            }
         }
     }
 
